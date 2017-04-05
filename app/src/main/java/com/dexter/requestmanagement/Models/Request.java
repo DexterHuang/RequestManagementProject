@@ -14,6 +14,7 @@ public class Request {
     private RequestStatusType status;
     private String photoUrl;
     private String id;
+    private String description;
 
     public Request() {
 
@@ -67,4 +68,11 @@ public class Request {
         return id;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description + "";
+    }
 }

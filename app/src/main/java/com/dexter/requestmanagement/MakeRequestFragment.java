@@ -95,7 +95,6 @@ public class MakeRequestFragment extends Fragment {
     private Button sendRequestButton;
     private Button addItemButton;
     private ListView itemListView;
-    private EditText descriptionEditText;
     private ImageView photoImageView;
 
 
@@ -137,18 +136,17 @@ public class MakeRequestFragment extends Fragment {
 
         final Request request = new Request(UUID.randomUUID().toString(), buildingNumber, roomNumber, items);
         progressDialog.show();
-
+        request.setDescription(descriptionTextView.getText().toString());
         Bitmap bitmap = BitmapFactory.decodeFile(photoFilePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] data = baos.toByteArray();
-        FirebaseManager.getStorage().child("photos/" + UUID.randomUUID()).putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        FirebaseManager.getStorage().child("photos/" + request.getID()).putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 request.setPhotoUrl(downloadUrl.toString());
-                Debug.log(request.getPhotoUrl());
                 FirebaseManager.getDatabase().child("requests").child(request.getID()).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -188,7 +186,7 @@ public class MakeRequestFragment extends Fragment {
         sendRequestButton = (Button) v.findViewById(R.id.RequestButton);
         addItemButton = (Button) v.findViewById(R.id.AddItemButton);
         itemListView = (ListView) v.findViewById(R.id.ItemListView);
-        descriptionEditText = (EditText) v.findViewById(R.id.DescriptionEditText);
+        descriptionTextView = (EditText) v.findViewById(R.id.DescriptionEditText);
         final ArrayAdapter<String> itemListArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
         itemListView.setAdapter(itemListArrayAdapter);
         photoImageView = (ImageView) v.findViewById(R.id.PhotoImageView);

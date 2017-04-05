@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,14 +64,15 @@ public class MainActivity extends AppCompatActivity
         TextView emailTextView = (TextView) headerView.findViewById(R.id.emailTextView);
         String i = "TestingPotato@Gmail.com";
         try {
-            i = getIntent().getExtras().getString("ID");
+            if (getIntent().getExtras().containsKey("ID")) {
+                i = getIntent().getExtras().getString("ID");
+            }
         } catch (Exception e) {
         }
         if (i.equals("TestingPotato@Gmail.com")) {
             FirebaseAuth.getInstance().signInWithEmailAndPassword("admin@localhost.com", "123456789");
         }
         final String id = i;
-        Log.d("log", id);
         emailTextView.setText(id);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
