@@ -1,5 +1,6 @@
 package com.dexter.requestmanagement;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -9,6 +10,7 @@ public class FirebaseManager {
 
     private static DatabaseReference database;
     private static StorageReference storage;
+    private static FirebaseAuth auth;
 
     public static DatabaseReference getDatabase() {
         if (database == null) {
@@ -22,6 +24,12 @@ public class FirebaseManager {
             storage = FirebaseStorage.getInstance().getReference();
         }
         return storage;
+    }
+    public static FirebaseAuth getAuth(){
+        if( auth == null){
+            auth = FirebaseAuth.getInstance();
+        }
+        return auth;
     }
 
 }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.dexter.requestmanagement.Models.Request;
 import com.dexter.requestmanagement.Models.User;
+import com.dexter.requestmanagement.Models.UserRoleType;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MakeRequestFragment.OnFragmentInteractionListener,
-        requestListFragment.OnListFragmentInteractionListener {
+        requestListFragment.OnListFragmentInteractionListener,
+        UserListFragment.OnFragmentInteractionListener {
 
     private User currentUser;
     private DatabaseReference mDatabase;
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         if (i.equals("TestingPotato@Gmail.com")) {
             FirebaseAuth.getInstance().signInWithEmailAndPassword("admin@localhost.com", "123456789");
         }
-        final String id = i;
+        final String id = i.toLowerCase();
         emailTextView.setText(id);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity
                     User u = dataSnapshot.getValue(User.class);
                     currentUser = u;
                 } else {
-                    currentUser = new User(id, Math.random() + "", "tatopo");
+                    currentUser = new User(id, Math.random() + "", "tatopo", UserRoleType.ADMIN);
                     userRef.push().setValue(currentUser);
                 }
             }
@@ -164,6 +166,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_requestList:
                 fragment = new requestListFragment();
                 title = "Request List";
+                break;
+            case R.id.nav_registerUser:
+                fragment = new UserListFragment();
+                title = "User List";
                 break;
         }
 

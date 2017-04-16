@@ -15,6 +15,7 @@ public class Request {
     private String photoUrl;
     private String id;
     private String description;
+    private ArrayList<String> assignedAgents = new ArrayList<String>();
 
     public Request() {
 
@@ -46,6 +47,9 @@ public class Request {
     }
 
     public ArrayList<String> getItems() {
+        if (items == null) {
+            items = new ArrayList<String>();
+        }
         return items;
     }
 
