@@ -5,59 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.dexter.requestmanagement.RegisterUser"
-    tools:showIn="@layout/activity_register_user"
+    tools:context="com.dexter.requestmanagement.CreateServiceActivity"
+    tools:showIn="@layout/activity_create_service"
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/FirstNameEditText"
+        android:id="@+id/ServiceNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="First Name"
+        android:hint="Service Name"
         android:inputType="textPersonName"
         android:textAlignment="center" />
 
     <EditText
-        android:id="@+id/LastNameEditText"
+        android:id="@+id/PriceEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Last Name"
-        android:inputType="textPersonName"
+        android:hint="0.0"
+        android:inputType="numberDecimal"
         android:textAlignment="center" />
 
     <EditText
-        android:id="@+id/EmailEditText"
+        android:id="@+id/DescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Login Email"
-        android:inputType="textEmailAddress"
+        android:hint="Description"
+        android:inputType="textMultiLine"
         android:textAlignment="center" />
-
-    <EditText
-        android:id="@+id/PasswordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:textAlignment="center" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="User Role"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        tools:text="User Role" />
-
-    <Spinner
-        android:id="@+id/UserRoleSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/ConfirmButton"

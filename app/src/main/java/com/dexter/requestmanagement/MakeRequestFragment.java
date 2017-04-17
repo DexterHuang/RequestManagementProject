@@ -119,36 +119,18 @@ public class MakeRequestFragment extends Fragment {
             items.add(adapter.getItem(i));
         }
         if (buildingNumber.length() <= 0) {
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-            builder.setMessage("Please enter Building Number!")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
+            Toast.makeText(getView().getContext(), "Building Number cannot be empty", Toast.LENGTH_SHORT).
+                    show();
             return;
         }
         if (roomNumber.length() <= 0) {
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-            builder.setMessage("Please enter Room Number!")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
+            Toast.makeText(getView().getContext(), "Room Number cannot be empty", Toast.LENGTH_SHORT).
+                    show();
             return;
         }
         if (photoURI == null) {
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-            builder.setMessage("Please insert a photo!")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
+            Toast.makeText(getView().getContext(), "You must attach a photo", Toast.LENGTH_SHORT).
+                    show();
             return;
         }
 

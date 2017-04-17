@@ -18,9 +18,9 @@
     </group>
 
     <item
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_createService"
         android:icon="@drawable/ic_menu_slideshow"
-        android:title="Slideshow" />
+        android:title="Create Service" />
     <item android:title="Communicate">
         <menu>
             <item

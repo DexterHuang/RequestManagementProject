@@ -171,6 +171,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new UserListFragment();
                 title = "User List";
                 break;
+            case R.id.nav_createService:
+                Intent intent = new Intent(MainActivity.this, CreateServiceActivity.class);
+                startActivity(intent);
+                return;
         }
 
         if (fragment != null) {

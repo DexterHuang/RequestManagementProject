@@ -26,4 +26,5 @@
     <string name="title_activity_request_detail">RequestDetailActivity</string>
     <string name="title_activity_register_user">RegisterUser</string>
     <string name="title_activity_edit_user">EditUserActivity</string>
+    <string name="title_activity_create_service">CreateServiceActivity</string>
 </resources>
