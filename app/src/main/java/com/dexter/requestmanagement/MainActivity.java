@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MakeRequestFragment.OnFragmentInteractionListener,
         requestListFragment.OnListFragmentInteractionListener,
-        UserListFragment.OnFragmentInteractionListener {
+        UserListFragment.OnFragmentInteractionListener,
+        ServiceListFragment.OnFragmentInteractionListener{
 
     private User currentUser;
     private DatabaseReference mDatabase;
@@ -172,9 +173,9 @@ public class MainActivity extends AppCompatActivity
                 title = "User List";
                 break;
             case R.id.nav_createService:
-                Intent intent = new Intent(MainActivity.this, CreateServiceActivity.class);
-                startActivity(intent);
-                return;
+                fragment = new ServiceListFragment();
+                title = "Service List";
+                break;
         }
 
         if (fragment != null) {
