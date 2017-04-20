@@ -1,12 +1,10 @@
 package com.dexter.requestmanagement;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -77,7 +75,7 @@ public class ServiceListFragment extends Fragment {
     }
 
     private Button createServiceButton;
-    private ListView serviceListView;;
+    private ListView serviceListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,7 +129,8 @@ public class ServiceListFragment extends Fragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                                    Debug.log(data.getKey());
+                                    String s = data.getKey();
+                                    FirebaseManager.getDatabase().child("services").child(s).removeValue();
                                 }
 
                             }

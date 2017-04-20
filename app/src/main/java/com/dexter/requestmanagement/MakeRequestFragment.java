@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.UploadTask;
 
@@ -207,11 +210,21 @@ public class MakeRequestFragment extends Fragment {
                 builderSingle.setTitle("Select One Name:-");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
-                arrayAdapter.add("JobType1");
-                arrayAdapter.add("JobType2");
-                arrayAdapter.add("JobType3");
-                arrayAdapter.add("JobType4");
-                arrayAdapter.add("JobType5");
+                FirebaseManager.getDatabase().child("service").orderByChild("serviceName").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        arrayAdapter.clear();
+                        for (DataSnapshot data : dataSnapshot.getChildren()){
+                            String servicename = data.getValue().toString();
+                            arrayAdapter.add(servicename);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
                 builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
