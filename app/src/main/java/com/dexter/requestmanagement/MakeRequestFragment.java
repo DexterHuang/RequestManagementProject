@@ -101,7 +101,7 @@ public class MakeRequestFragment extends Fragment {
     private Button addItemButton;
     private ListView itemListView;
     private ImageView photoImageView;
-
+    private TextView priceTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,7 +198,7 @@ public class MakeRequestFragment extends Fragment {
         final ArrayAdapter<String> itemListArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
         itemListView.setAdapter(itemListArrayAdapter);
         photoImageView = (ImageView) v.findViewById(R.id.PhotoImageView);
-
+        priceTextView = (TextView) v.findViewById(R.id.PriceTextView);
         sendRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,6 +251,7 @@ public class MakeRequestFragment extends Fragment {
                         if (service != null){
                             itemListArrayAdapter.add(strName);
                             itemListArrayAdapter.notifyDataSetChanged();
+                            calculateTotal(itemListArrayAdapter);
 
                         }else{
                             Toast t = Toast.makeText(getContext(), "ITS BROKEN!", Toast.LENGTH_LONG);
@@ -274,6 +275,7 @@ public class MakeRequestFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         itemListArrayAdapter.remove(item);
                         itemListArrayAdapter.notifyDataSetChanged();
+                        calculateTotal(itemListArrayAdapter);
 
                     }
                 });
@@ -309,9 +311,10 @@ public class MakeRequestFragment extends Fragment {
                 removeNames.add(name);
             }
         }
-        for(String name : removeNames){
+        for(String name : removeNames) {
             adapter.remove(name);
         }
+        priceTextView.setText(total + " SGD");
     }
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
