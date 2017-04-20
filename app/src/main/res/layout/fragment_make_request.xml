@@ -46,6 +46,17 @@
                 android:textAlignment="center" />
 
             <Button
+                android:id="@+id/AddItemButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Item" />
+
+            <ListView
+                android:id="@+id/ItemListView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
+
+            <Button
                 android:id="@+id/TakePhotoButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,17 +67,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_menu_camera" />
-
-            <Button
-                android:id="@+id/AddItemButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add Item" />
-
-            <ListView
-                android:id="@+id/ItemListView"
-                android:layout_width="match_parent"
-                android:layout_height="150dp" />
 
             <EditText
                 android:id="@+id/DescriptionEditText"
@@ -85,6 +85,13 @@
                 android:text="Send Request"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="152dp" />
+
+            <TextView
+                android:id="@+id/PriceTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                tools:text="0.0" />
         </LinearLayout>
     </ScrollView>
 

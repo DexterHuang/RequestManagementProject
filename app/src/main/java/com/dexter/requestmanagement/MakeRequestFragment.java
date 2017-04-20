@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dexter.requestmanagement.Models.Request;
+import com.dexter.requestmanagement.Models.ServiceType;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -179,6 +181,9 @@ public class MakeRequestFragment extends Fragment {
 
     }
 
+    HashMap<String, ServiceType> nameServices = new HashMap<String, ServiceType>();
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -201,6 +206,8 @@ public class MakeRequestFragment extends Fragment {
             }
         });
 
+
+
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,14 +217,17 @@ public class MakeRequestFragment extends Fragment {
                 builderSingle.setTitle("Select One Name:-");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
-                FirebaseManager.getDatabase().child("service").orderByChild("serviceName").addValueEventListener(new ValueEventListener() {
+                FirebaseManager.getDatabase().child("services").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         arrayAdapter.clear();
+                        nameServices.clear();
                         for (DataSnapshot data : dataSnapshot.getChildren()){
-                            String servicename = data.getValue().toString();
-                            arrayAdapter.add(servicename);
+                            ServiceType service = data.getValue(ServiceType.class);
+                            arrayAdapter.add(service.getServiceName());
+                            nameServices.put(service.getServiceName(), service);
                         }
+                        arrayAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -237,10 +247,18 @@ public class MakeRequestFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String strName = arrayAdapter.getItem(which);
-                        itemListArrayAdapter.add(strName);
-                        itemListArrayAdapter.notifyDataSetChanged();
+                        ServiceType service = nameServices.get(strName);
+                        if (service != null){
+                            itemListArrayAdapter.add(strName);
+                            itemListArrayAdapter.notifyDataSetChanged();
+
+                        }else{
+                            Toast t = Toast.makeText(getContext(), "ITS BROKEN!", Toast.LENGTH_LONG);
+                            t.show();
+                        }
                     }
                 });
+
                 builderSingle.show();
             }
         });
@@ -279,7 +297,22 @@ public class MakeRequestFragment extends Fragment {
     }
 
     static final int REQUEST_TAKE_PHOTO = 1;
-
+    private void calculateTotal(ArrayAdapter<String> adapter){
+        float total = 0;
+        ArrayList<String> removeNames = new ArrayList<>();
+        for(int i = 0 ; i < adapter.getCount(); i ++){
+            String name = adapter.getItem(i);
+            ServiceType service = nameServices.get(name);
+            if(service != null){
+                total += service.getPrice();
+            }else{
+                removeNames.add(name);
+            }
+        }
+        for(String name : removeNames){
+            adapter.remove(name);
+        }
+    }
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
