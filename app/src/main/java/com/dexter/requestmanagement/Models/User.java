@@ -48,4 +48,8 @@ public class User {
 
         return role;
     }
+
+    public String toString() {
+        return getFirstName() + "  " + getLastName() + "  " + getEmail();
+    }
 }

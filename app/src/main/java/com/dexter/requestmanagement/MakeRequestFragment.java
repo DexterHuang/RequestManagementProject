@@ -4,16 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,26 +17,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dexter.requestmanagement.Models.PhotoType;
 import com.dexter.requestmanagement.Models.Request;
 import com.dexter.requestmanagement.Models.ServiceType;
+import com.dexter.requestmanagement.Models.TempPhoto;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -68,9 +58,8 @@ public class MakeRequestFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
-    private Uri photoURI;
     private ProgressDialog progressDialog;
+    private ArrayList<TempPhoto> tempPhotos = new ArrayList<>();
 
     public MakeRequestFragment() {
         // Required empty public constructor
@@ -100,8 +89,9 @@ public class MakeRequestFragment extends Fragment {
     private Button sendRequestButton;
     private Button addItemButton;
     private ListView itemListView;
-    private ImageView photoImageView;
     private TextView priceTextView;
+    private CameraManager cameraManager;
+    private LinearLayout photoLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,7 +123,7 @@ public class MakeRequestFragment extends Fragment {
                     show();
             return;
         }
-        if (photoURI == null) {
+        if (tempPhotos.isEmpty()) {
             Toast.makeText(getView().getContext(), "You must attach a photo", Toast.LENGTH_SHORT).
                     show();
             return;
@@ -141,48 +131,43 @@ public class MakeRequestFragment extends Fragment {
 
         final Request request = new Request(UUID.randomUUID().toString(), buildingNumber, roomNumber, items);
         progressDialog.show();
+        request.setHotelName("ABS Hotel");
         request.setDescription(descriptionTextView.getText().toString());
-        Bitmap bitmap = BitmapFactory.decodeFile(photoFilePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] data = baos.toByteArray();
-        FirebaseManager.getStorage().child("photos/" + request.getID()).putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                request.setPhotoUrl(downloadUrl.toString());
-                FirebaseManager.getDatabase().child("requests").child(request.getID()).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.dismiss();
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new requestListFragment());
-                        ft.commit();
-                        getActivity().getSupportFragmentManager().executePendingTransactions();
+        for (final TempPhoto tempPhoto : tempPhotos) {
+            cameraManager.uploadImage(tempPhoto, request, PhotoType.INITIAL, new Runnable() {
+                @Override
+                public void run() {
+                    request.getInitialPhotoUrls().add(tempPhoto.getDownloadURI());
+                    for (TempPhoto tp : tempPhotos) {
+                        if (tp.getDownloadURI() == null) {
+                            return;
+                        }
                     }
-                });
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                progressDialog.setMessage("Sending image [" + (int) (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount() * 100) + "%]");
-                Debug.log("Progress");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Sorry =[");
-                builder.setMessage("Failed to upload image file.. Please contact dev\n" + e.getMessage());
-                e.printStackTrace();
-            }
-        });
+                    FirebaseManager.getDatabase().child("requests").child(request.getID()).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.dismiss();
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_frame, new requestListFragment());
+                            ft.commit();
+                            getActivity().getSupportFragmentManager().executePendingTransactions();
+                        }
+                    });
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Sorry =[");
+                    builder.setMessage("Failed to upload image file.. Please contact dev");
+                }
+            });
+        }
+
 
     }
 
     HashMap<String, ServiceType> nameServices = new HashMap<String, ServiceType>();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -197,16 +182,15 @@ public class MakeRequestFragment extends Fragment {
         descriptionTextView = (EditText) v.findViewById(R.id.DescriptionEditText);
         final ArrayAdapter<String> itemListArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
         itemListView.setAdapter(itemListArrayAdapter);
-        photoImageView = (ImageView) v.findViewById(R.id.PhotoImageView);
         priceTextView = (TextView) v.findViewById(R.id.PriceTextView);
+        photoLayout = (LinearLayout) v.findViewById(R.id.PhotoListView);
         sendRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 trySendRequest();
             }
         });
-
-
+        cameraManager = new CameraManager();
 
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,7 +206,7 @@ public class MakeRequestFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         arrayAdapter.clear();
                         nameServices.clear();
-                        for (DataSnapshot data : dataSnapshot.getChildren()){
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
                             ServiceType service = data.getValue(ServiceType.class);
                             arrayAdapter.add(service.getServiceName());
                             nameServices.put(service.getServiceName(), service);
@@ -248,12 +232,12 @@ public class MakeRequestFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String strName = arrayAdapter.getItem(which);
                         ServiceType service = nameServices.get(strName);
-                        if (service != null){
+                        if (service != null) {
                             itemListArrayAdapter.add(strName);
                             itemListArrayAdapter.notifyDataSetChanged();
                             calculateTotal(itemListArrayAdapter);
 
-                        }else{
+                        } else {
                             Toast t = Toast.makeText(getContext(), "ITS BROKEN!", Toast.LENGTH_LONG);
                             t.show();
                         }
@@ -291,76 +275,64 @@ public class MakeRequestFragment extends Fragment {
         v.findViewById(R.id.TakePhotoButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                cameraManager.dispatchTakePictureIntent(MakeRequestFragment.this);
+
             }
         });
         progressDialog = new ProgressDialog(getContext());
         return v;
     }
 
+
     static final int REQUEST_TAKE_PHOTO = 1;
-    private void calculateTotal(ArrayAdapter<String> adapter){
+
+    private void calculateTotal(ArrayAdapter<String> adapter) {
         float total = 0;
         ArrayList<String> removeNames = new ArrayList<>();
-        for(int i = 0 ; i < adapter.getCount(); i ++){
+        for (int i = 0; i < adapter.getCount(); i++) {
             String name = adapter.getItem(i);
             ServiceType service = nameServices.get(name);
-            if(service != null){
+            if (service != null) {
                 total += service.getPrice();
-            }else{
+            } else {
                 removeNames.add(name);
             }
         }
-        for(String name : removeNames) {
+        for (String name : removeNames) {
             adapter.remove(name);
         }
         priceTextView.setText(total + " SGD");
     }
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-            }
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(getContext(),
-                        "com.dexter.requestmanagement.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
 
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
-            photoImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            photoImageView.setImageURI(photoURI);
+            tempPhotos.add(cameraManager.tempPhoto);
+            cameraManager.refreshImageScrollView(getContext(), photoLayout, tempPhotos, new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Are you sure?");
+                    builder.setMessage("You sure want to delete all photos?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            tempPhotos.clear();
+                            photoLayout.removeAllViews();
+                        }
+                    });
+                    builder.setNegativeButton("No", null);
+                    builder.show();
+                }
+            });
         } else {
             Toast toast = Toast.makeText(this.getContext(), "Failed to take photo", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
 
-    private String photoFilePath;
 
-    private File createImageFile() throws IOException {
-        String imageFileName = "TempFile";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        photoFilePath = image.getPath();
-        // Save a file: path for use with ACTION_VIEW intents
-        return image;
-    }
     // TODO: Rename method, update argument and hook method into UI event
 
     public void onButtonPressed(Uri uri) {

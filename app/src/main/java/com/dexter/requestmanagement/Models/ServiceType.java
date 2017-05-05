@@ -5,10 +5,11 @@ public class ServiceType {
     private float price;
     private String description;
 
-    public ServiceType(){
+    public ServiceType() {
 
     }
-    public ServiceType(String name, float price){
+
+    public ServiceType(String name, float price) {
         this.serviceName = name;
         this.price = price;
     }

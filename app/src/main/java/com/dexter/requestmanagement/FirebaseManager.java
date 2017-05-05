@@ -25,8 +25,13 @@ public class FirebaseManager {
         }
         return storage;
     }
-    public static FirebaseAuth getAuth(){
-        if( auth == null){
+
+    public static FirebaseStorage getStorageInstance() {
+        return FirebaseStorage.getInstance();
+    }
+
+    public static FirebaseAuth getAuth() {
+        if (auth == null) {
             auth = FirebaseAuth.getInstance();
         }
         return auth;

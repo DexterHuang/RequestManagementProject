@@ -27,8 +27,7 @@ public class EditUserActivity extends AppCompatActivity {
 
     Spinner userRoleSpinner;
     ArrayAdapter<String> userRoleAdapter;
-    EditText firstNameEditText;
-    EditText lastNameEditText;
+    EditText nameEditText;
     EditText emailEditText;
     Button saveChangeButton;
     Button removeUserButton;
@@ -48,10 +47,8 @@ public class EditUserActivity extends AppCompatActivity {
             userRoleAdapter.add(role.name());
         }
         userRoleSpinner.setAdapter(userRoleAdapter);
-        firstNameEditText = (EditText) findViewById(R.id.FirstNameEditText);
-        firstNameEditText.setEnabled(false);
-        lastNameEditText = (EditText) findViewById(R.id.LastNameEditText);
-        lastNameEditText.setEnabled(false);
+        nameEditText = (EditText) findViewById(R.id.NameEditText);
+        nameEditText.setEnabled(false);
         emailEditText = (EditText) findViewById(R.id.EmailEditText);
         emailEditText.setEnabled(false);
         saveChangeButton = (Button) findViewById(R.id.SaveChangeButton);
@@ -69,9 +66,11 @@ public class EditUserActivity extends AppCompatActivity {
                 if (dataSnapshot.getChildrenCount() >= 1) {
                     DataSnapshot data = dataSnapshot.getChildren().iterator().next();
                     final User user = data.getValue(User.class);
+                    if (user == null) {
+                        return;
+                    }
                     final String key = data.getKey();
-                    firstNameEditText.setText(user.getFirstName());
-                    lastNameEditText.setText(user.getLastName());
+                    nameEditText.setText(user.getFirstName() + "  " + user.getLastName());
                     emailEditText.setText(user.getEmail());
                     userRoleSpinner.setSelection(user.getRole().ordinal());
                     saveChangeButton.setOnClickListener(new View.OnClickListener() {

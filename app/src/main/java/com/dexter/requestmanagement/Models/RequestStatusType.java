@@ -1,5 +1,5 @@
 package com.dexter.requestmanagement.Models;
 
 public enum RequestStatusType {
-    PENDING, PROCESSING, DONE
+    PENDING, DISPATCHED, PROCESSING, DONE
 }

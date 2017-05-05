@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity
         MakeRequestFragment.OnFragmentInteractionListener,
         requestListFragment.OnListFragmentInteractionListener,
         UserListFragment.OnFragmentInteractionListener,
-        ServiceListFragment.OnFragmentInteractionListener{
+        ServiceListFragment.OnFragmentInteractionListener,
+        PendingRequestListFragment.OnFragmentInteractionListener {
 
     private User currentUser;
     private DatabaseReference mDatabase;
@@ -175,6 +176,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_createService:
                 fragment = new ServiceListFragment();
                 title = "Service List";
+                break;
+            case R.id.nav_pendingRequestList:
+                fragment = new PendingRequestListFragment();
+                title = "Pending Request List";
                 break;
         }
 

@@ -6,20 +6,19 @@
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/FirstNameEditText"
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <EditText
+        android:id="@+id/NameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="First Name"
-        android:inputType="textPersonName"
-        android:textAlignment="center" />
-
-    <EditText
-        android:id="@+id/LastNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Last Name"
         android:inputType="textPersonName"
         android:textAlignment="center" />
 

@@ -62,11 +62,16 @@
                 android:layout_height="wrap_content"
                 android:text="Attach Photo" />
 
-            <ImageView
-                android:id="@+id/PhotoImageView"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_menu_camera" />
+                android:layout_height="200dp">
+
+                <LinearLayout
+                    android:id="@+id/PhotoListView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 
             <EditText
                 android:id="@+id/DescriptionEditText"

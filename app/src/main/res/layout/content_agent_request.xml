@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.dexter.requestmanagement.RequestDetailActivity"
-    tools:showIn="@layout/activity_request_detail">
+    tools:context="com.dexter.requestmanagement.AgentRequestActivity"
+    tools:showIn="@layout/activity_agent_request">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -70,13 +68,6 @@
                 android:textStyle="bold"
                 tools:text="Assiged Agents" />
 
-            <Button
-                android:id="@+id/AddAgentButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Assign Agent"
-                tools:text="Assign Agent" />
-
             <ListView
                 android:id="@+id/AgentListView"
                 android:layout_width="match_parent"
@@ -84,20 +75,11 @@
                 android:layout_weight="0.53" />
 
             <Button
-                android:id="@+id/DispatchButton"
+                android:id="@+id/TakeCheckInPhotoButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dispatch"
-                tools:text="Dispatch" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Check-In Photos"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                tools:text="Check-In Photos" />
+                android:text="Take Check In Photo"
+                tools:text="Take Check In Photo" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -110,14 +92,19 @@
                     android:orientation="horizontal" />
             </HorizontalScrollView>
 
-            <TextView
-                android:id="@+id/textView6"
+            <Button
+                android:id="@+id/CheckInButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Completion Photos"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                tools:text="Completion Photos" />
+                android:text="Check In"
+                tools:text="Check In" />
+
+            <Button
+                android:id="@+id/TakeCompletionPhotoButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take Completion Photo"
+                tools:text="Take Completion Photo" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -130,7 +117,14 @@
                     android:orientation="horizontal" />
             </HorizontalScrollView>
 
+            <Button
+                android:id="@+id/CompletionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Report Completion"
+                tools:text="Report Completion" />
+
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

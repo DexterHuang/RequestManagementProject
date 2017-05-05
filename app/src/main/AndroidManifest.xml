@@ -73,7 +73,16 @@
         <activity
             android:name=".CreateServiceActivity"
             android:label="@string/title_activity_create_service"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AgentRequestActivity"
+            android:label="@string/title_activity_agent_request"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dexter.requestmanagement.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
