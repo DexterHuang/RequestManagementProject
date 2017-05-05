@@ -101,8 +101,7 @@ public class AgentRequestActivity extends AppCompatActivity {
                     public void run() {
                         Toast toast = Toast.makeText(AgentRequestActivity.this, "Failed to load request data!", Toast.LENGTH_LONG);
                         toast.show();
-                        Intent intent = new Intent(AgentRequestActivity.this, MainActivity.class);
-                        AgentRequestActivity.this.startActivity(intent);
+                        NavigationHelper.showMainActivity(AgentRequestActivity.this, R.id.nav_pendingRequestList);
                     }
                 };
                 titleTextView.setText(request.toString());

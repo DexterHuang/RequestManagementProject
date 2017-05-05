@@ -132,4 +132,9 @@ public class EditUserActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        NavigationHelper.setBackBundle(this, R.id.nav_registerUser);
+        super.onBackPressed();
+    }
 }

@@ -70,6 +70,11 @@ public class MainActivity extends AppCompatActivity
         try {
             if (getIntent().getExtras().containsKey("ID")) {
                 i = getIntent().getExtras().getString("ID");
+
+            }
+            if(getIntent().getExtras().containsKey("display")){
+                int displayId = getIntent().getExtras().getInt("display");
+                displayView(displayId);
             }
         } catch (Exception e) {
         }

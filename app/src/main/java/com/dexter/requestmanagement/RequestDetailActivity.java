@@ -214,4 +214,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        NavigationHelper.setBackBundle(this, R.id.nav_requestList);
+        super.onBackPressed();
+    }
 }
